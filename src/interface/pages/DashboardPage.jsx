@@ -5,15 +5,16 @@ import { ArrowLeft, LayoutSidebar } from "react-bootstrap-icons";
 function DashboardPage() {
   const [isOpen, setIsOpen] = useState(false);
 
-  const   toggleSidebar = () => {
+  const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
   return (
     <>
-        <Sidebar isOpen={isOpen} toggle={toggleSidebar} />
-        <button className="btn btn-outline-primary" onClick={toggleSidebar}><LayoutSidebar className="h3 m-auto"/>
-        </button>
-        <Dashboard />
+      <Sidebar isOpen={isOpen} toggle={toggleSidebar} />
+      <button className="btn btn-outline-primary" onClick={toggleSidebar}>
+        <LayoutSidebar className="h3 m-auto" />
+      </button>
+      <Dashboard />
     </>
   );
 }
