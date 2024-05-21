@@ -1,18 +1,35 @@
 import React from "react";
 import "./RegisterForm.css";
-import { ArrowRight } from "react-bootstrap-icons";
 import { Button, Col, Container, InputGroup, Row } from "react-bootstrap";
 import CalenderImg from "../../../assets/img/undraw_calendar_re_ki49.svg";
 
 import Form from "react-bootstrap/Form";
-import { useNavigate } from "react-router-dom";
 
 function RegisterForm() {
-  const navigate = useNavigate();
-  const SubmitHandler = (e) => {
+  const [input, setInput] = useState({
+    email: "",
+    password: "",
+    role: "student", // Default role
+  });
+  const auth = useAuth();
+
+  const submitHandler = (e) => {
     e.preventDefault();
-    navigate("/");
+    if (input.email !== "" && input.password !== "") {
+      auth.loginAction(input);
+    } else {
+      alert("Please provide valid credentials");
+    }
   };
+
+  const inputHandler = (e) => {
+    const { name, value } = e.target;
+    setInput((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   return (
     <>
       <div></div>
@@ -31,7 +48,7 @@ function RegisterForm() {
           <Col className="mx-auto align-content-center " lg>
             {" "}
             <h2>Select Your Role</h2>
-            <Form>
+            <Form onSubmit={submitHandler}>
               {["radio"].map((type) => (
                 <div key={`inline-${type}`} className="mb-3">
                   <Form.Check
@@ -40,6 +57,8 @@ function RegisterForm() {
                     name="role"
                     value="admin"
                     type={type}
+                    checked={input.role === "admin"}
+                    onChange={inputHandler}
                     id={`inline-${type}-1`}
                   />
                   <Form.Check
@@ -48,10 +67,16 @@ function RegisterForm() {
                     name="role"
                     value="student"
                     type={type}
+                    checked={input.role === "student"}
+                    onChange={inputHandler}
                     id={`inline-${type}-2`}
                   />
                   <InputGroup size="md" className="mb-3">
                     <Form.Control
+                      type="email"
+                      name="email"
+                      onChange={inputHandler}
+                      value={input.email}
                       placeholder="Enter Username"
                       aria-label="Username"
                       aria-describedby="inputGroup-sizing-sm"
@@ -61,6 +86,10 @@ function RegisterForm() {
                   <InputGroup className="mb-3">
                     <Form.Control
                       aria-label="Password"
+                      type="password"
+                      name="password"
+                      onChange={inputHandler}
+                      value={input.password}
                       placeholder="Enter Password"
                       aria-describedby="inputGroup-sizing-default"
                     />
