@@ -2,7 +2,7 @@ import React from "react";
 import RegisterForm from "../components/register-form/RegisterForm";
 
 function LoginPage() {
-  return <RegisterForm button={"Login Now"} />;
+  return <RegisterForm/>;
 }
 
 export default LoginPage;
