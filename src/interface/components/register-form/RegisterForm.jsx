@@ -3,7 +3,7 @@ import { Button, Col, Container, InputGroup, Row } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 import { useAuth } from "../../../utilities/authContext/AuthProvider";
 import CalenderImg from "../../../assets/img/undraw_calendar_re_ki49.svg";
-import './RegisterForm.css'
+import "./RegisterForm.css";
 const RegisterForm = () => {
   const [input, setInput] = useState({
     email: "",
@@ -31,19 +31,17 @@ const RegisterForm = () => {
 
   return (
     <Container className="py-3 align-content-center">
-      <Row className="mx-auto gap-4">
+      <h1 className="fw-bold display-5 text-center  ">Web Attendance System</h1>
+      <Row className="mx-auto gap-5">
         <Col className="mx-auto align-content-center" lg>
-          <h1 className="fw-bold display-4 text-center text-lg-start ">
-            Sign in to Web Attendance System
-          </h1>
           <img
             src={CalenderImg}
-            className="img-fluid d-none d-lg-block"
+            className="img-fluid pt-5 d-none d-lg-block"
             alt=""
           />
         </Col>
-        <Col className="mx-auto align-content-center " lg>
-          <h2>Select Your Role</h2>
+        <Col className="align-content-center" lg>
+          <h2 className="text-white">Select Your Role</h2>
           <Form onSubmit={submitHandler}>
             <Form.Check
               inline
@@ -65,10 +63,11 @@ const RegisterForm = () => {
               onChange={inputHandler}
               id={`inline-radio-2`}
             />
-            <InputGroup size="md" className="mb-3">
+            <InputGroup size="md" className="">
               <Form.Control
                 type="email"
                 name="email"
+                size="lg"
                 onChange={inputHandler}
                 value={input.email}
                 placeholder="Enter Email"
@@ -80,6 +79,7 @@ const RegisterForm = () => {
             <InputGroup className="mb-3">
               <Form.Control
                 aria-label="Password"
+                size="lg"
                 type="password"
                 name="password"
                 onChange={inputHandler}
