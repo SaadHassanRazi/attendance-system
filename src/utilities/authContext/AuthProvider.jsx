@@ -1,19 +1,25 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 export const AuthContext = createContext();
 
-export  const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(localStorage.getItem("user") || "");
   const [token, setToken] = useState(localStorage.getItem("site") || "");
   const [role, setRole] = useState(localStorage.getItem("role") || "");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    localStorage.setItem("user", user);
+  }, [user]);
 
   const loginAction = async (data) => {
     try {
       const response = await fetch(
         `https://664c5f8535bbda109880179d.mockapi.io/users`,
-        { method: "GET" }
+        {
+          method: "GET",
+        }
       );
       const users = await response.json();
       const user = users.find(
@@ -26,6 +32,7 @@ export  const AuthProvider = ({ children }) => {
         setRole(user.role);
         localStorage.setItem("site", user.token);
         localStorage.setItem("role", user.role);
+        localStorage.setItem("user", user.email);
         navigate("/dashboard");
         return;
       }
@@ -42,6 +49,7 @@ export  const AuthProvider = ({ children }) => {
     setRole("");
     localStorage.removeItem("site");
     localStorage.removeItem("role");
+    localStorage.removeItem("user");
     navigate("/login");
   };
 
