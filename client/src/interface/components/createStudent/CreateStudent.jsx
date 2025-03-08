@@ -33,7 +33,7 @@ const CreateStudent = () => {
       <h1>Create Student</h1>
       <form onSubmit={submitHandler}>
         <div class="mb-3">
-          <label for="exampleInputName" className="form-label">
+          <label htmlFor="exampleInputName" className="form-label">
             Student Name
           </label>
           <input
@@ -46,7 +46,7 @@ const CreateStudent = () => {
           />
         </div>
         <div class="mb-3">
-          <label for="exampleInputEmail1" class="form-label">
+          <label htmlFor="exampleInputEmail1" className="form-label">
             Student Email address
           </label>
           <input
@@ -58,12 +58,12 @@ const CreateStudent = () => {
             aria-describedby="emailHelp"
             required
           />
-          <div id="emailHelp" class="form-text text-secondary">
+          <div id="emailHelp" className="form-text text-secondary">
             Enter Student Email Address
           </div>
         </div>
         <div class="mb-3">
-          <label for="exampleInputPassword1" class="form-label">
+          <label for="exampleInputPassword1" className="form-label">
             Password
           </label>
           <input

@@ -57,15 +57,16 @@ export const AuthProvider = ({ children }) => {
     getStudentRecords();
     getUserData();
   }, []);
-  const createStudent = async (name, email, password,department) => {
+  const createStudent = async (name, email, password, department) => {
     try {
       const response = await axiosInstance.post("/users", {
         name,
         email,
         password,
-        department
+        department,
       });
       await getUserData();
+      navigate("/dashboard");
       return { success: true };
     } catch (error) {
       if (error.response && error.response.data.error) {
@@ -144,7 +145,7 @@ export const AuthProvider = ({ children }) => {
     setToken("");
     setRole("");
     setUserId(null);
-    setUserName("")
+    setUserName("");
     localStorage.removeItem("userId");
     localStorage.removeItem("site");
     localStorage.removeItem("role");
@@ -161,7 +162,7 @@ export const AuthProvider = ({ children }) => {
         token,
         role,
         userId,
-        userName, 
+        userName,
         department,
         departName,
         studentRecord,

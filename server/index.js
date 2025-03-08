@@ -26,6 +26,29 @@ const departments = [
 // Attendance Records
 const attendanceRecords = [];
 
+// Desired location (e.g., campus coordinates)
+const DESIRED_LOCATION = {
+  latitude: 29.38533095403263, // Example: San Francisco coordinates
+  longitude:  71.6950555847979,
+};
+const ACCEPTABLE_RADIUS = 700; // meters
+
+// Haversine formula to calculate distance between two points (in meters)
+const calculateDistance = (lat1, lon1, lat2, lon2) => {
+  const R = 6371e3; // Earth's radius in meters
+  const φ1 = (lat1 * Math.PI) / 180;
+  const φ2 = (lat2 * Math.PI) / 180;
+  const Δφ = ((lat2 - lat1) * Math.PI) / 180;
+  const Δλ = ((lon2 - lon1) * Math.PI) / 180;
+
+  const a =
+    Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+    Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  return R * c; // Distance in meters
+};
+
 // Endpoint to get users
 app.get("/api/users", (req, res) => {
   res.send(users);
@@ -36,9 +59,26 @@ app.get("/api/departments", (req, res) => {
   res.send(departments);
 });
 
-// Endpoint to check in
+// Endpoint to check in with location validation
 app.post("/api/attendance/checkin", (req, res) => {
-  const { studentId, date } = req.body;
+  const { studentId, date, latitude, longitude } = req.body;
+
+  if (!latitude || !longitude) {
+    return res.status(400).send({ error: "Location data is required for check-in." });
+  }
+
+  const distance = calculateDistance(
+    latitude,
+    longitude,
+    DESIRED_LOCATION.latitude,
+    DESIRED_LOCATION.longitude
+  );
+
+  if (distance > ACCEPTABLE_RADIUS) {
+    return res.status(403).send({
+      error: `You are ${Math.round(distance)} meters away from the desired location. Check-in is only allowed within ${ACCEPTABLE_RADIUS} meters.`,
+    });
+  }
 
   const existingRecord = attendanceRecords.find(
     (record) => record.studentId === parseInt(studentId) && record.date === date
@@ -60,6 +100,7 @@ app.post("/api/attendance/checkin", (req, res) => {
     checkInTime: new Date().toISOString(),
     checkOutTime: null,
     duration: 0,
+    checkInLocation: { latitude, longitude }, // Store location for reference
   };
 
   attendanceRecords.push(newRecord);

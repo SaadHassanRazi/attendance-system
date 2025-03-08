@@ -4,7 +4,8 @@ import { Link } from "react-router-dom";
 
 const AdminDashboard = () => {
   const { studentRecord, departName, userData} = useAuth();
-  console.log(studentRecord);
+
+  
   
   const [departmetStudentRecord, setDepartmentStudentRecord] = useState([]);
   const [departmentStudents, setDepartmentStudents] = useState([]);
@@ -37,6 +38,32 @@ const AdminDashboard = () => {
             <th scope="col">#</th>
             <th scope="col">Email</th>
             <th scope="col">Department</th>
+            <th scope="col">Student Id</th>
+       
+          </tr>
+        </thead>
+        <tbody>
+          {userData.filter((data)=>data.department === departName && data.role === 'student').map((data, index) => (
+            <tr key={index}>
+              <th scope="row">{index + 1}</th>
+              <td>{data.email}</td>
+              <td>{data.department}</td>
+              <td>{data.id}</td>
+         
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <div className="mt-5">
+      <h1 className="text-center">
+        Students Attendance Records ({departmentStudents.length})
+      </h1>
+      <table className="table rounded table-primary table-striped">
+        <thead className="">
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Email</th>
+            <th scope="col">Department</th>
             <th scope="col">Attendance</th>
             <th scope="col">Duration</th>
           </tr>
@@ -53,6 +80,7 @@ const AdminDashboard = () => {
           ))}
         </tbody>
       </table>
+      </div>
 
       <Link className="btn  btn-success" to={'/create-student'}>Create Student Account</Link>
     </div>
