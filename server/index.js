@@ -25,6 +25,7 @@ const departments = [
 
 // Attendance Records
 const attendanceRecords = [];
+const leaveRequests = []; // New array to store leave requests
 
 // Desired location (e.g., campus coordinates)
 const DESIRED_LOCATION = {
@@ -204,6 +205,59 @@ app.post("/api/users", (req, res) => {
   res.status(201).send({ message: "Student created successfully", student: newStudent });
 });
 
+app.post("/api/leave/request", (req, res) => {
+  const { studentId, startDate, endDate, reason } = req.body;
+
+  const student = users.find((u) => u.id === parseInt(studentId) && u.role === "student");
+  if (!student) {
+    return res.status(400).send({ error: "Invalid student ID." });
+  }
+
+  const newLeaveRequest = {
+    id: leaveRequests.length,
+    studentId: parseInt(studentId),
+    email: student.email,
+    department: student.department,
+    startDate,
+    endDate,
+    reason,
+    status: "pending", // "pending", "approved", "rejected"
+    createdAt: new Date().toISOString(),
+  };
+
+  leaveRequests.push(newLeaveRequest);
+  res.status(201).send({ message: "Leave request submitted successfully", leaveRequest: newLeaveRequest });
+});
+
+// New endpoint to get all leave requests (for admin)
+app.get("/api/leave/requests", (req, res) => {
+  const { department } = req.query;
+  if (department) {
+    const filteredRequests = leaveRequests.filter((req) => req.department === department);
+    res.send(filteredRequests);
+  } else {
+    res.send(leaveRequests);
+  }
+});
+
+// New endpoint to approve/reject leave requests (admin only)
+app.put("/api/leave/requests/:id", (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body; // "approved" or "rejected"
+
+  const leaveRequest = leaveRequests.find((req) => req.id === parseInt(id));
+  if (!leaveRequest) {
+    return res.status(404).send({ error: "Leave request not found." });
+  }
+
+  if (!["approved", "rejected"].includes(status)) {
+    return res.status(400).send({ error: "Invalid status. Use 'approved' or 'rejected'." });
+  }
+
+  leaveRequest.status = status;
+  leaveRequest.updatedAt = new Date().toISOString();
+  res.status(200).send({ message: `Leave request ${status} successfully`, leaveRequest });
+});
 // Start the server
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
